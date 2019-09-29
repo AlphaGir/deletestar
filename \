@@ -43,16 +43,16 @@ int pos[4][2]={{0,1},
 enum color{green,yellow,red,blue,purple};
        //  0     1      2   3    4
 int board[M][N]={
-	        {0,0,0,1,2,4,3,5,2,1},
-		{2,2,0,3,2,0,3,5,1,3},
-		{2,2,4,4,0,2,2,5,1,2},
-		{2,1,1,1,2,1,3,5,4,2},
-		{2,3,4,3,4,2,1,5,0,0},
-		{3,4,2,1,1,2,0,5,4,2},
-		{1,3,2,1,4,3,2,5,0,3},
-		{2,3,1,0,2,1,0,5,3,2},
-		{2,0,0,2,3,1,1,5,2,1},
-		{2,3,4,2,1,1,2,5,4,0}};
+	        {0,0,0,1,2,4,3,0,2,1},
+		{2,2,0,3,2,0,3,4,1,3},
+		{2,2,4,4,0,2,2,4,1,2},
+		{2,1,1,1,2,1,3,3,4,2},
+		{2,3,4,3,4,2,1,2,0,0},
+		{3,4,2,1,1,2,0,3,4,2},
+		{1,3,2,1,4,3,2,1,0,3},
+		{2,3,1,0,2,1,0,0,3,2},
+		{2,0,0,2,3,1,1,4,2,1},
+		{2,3,4,2,1,1,2,3,4,0}};
 point p[M][N];
 void setvalue()
 {
@@ -169,7 +169,7 @@ void move()//下移
 			     pp[j].loca[tem].a=l[i].a;
 			     pp[j].loca[tem].b=l[i].b;
 			     tem++;
-		            // printf("--%d %d --\n",l[i].a,l[i].b);
+		             printf("--%d %d---\n",l[i].a,l[i].b);
 		     }
 	     }
 	     tem=0;
@@ -178,29 +178,24 @@ void move()//下移
     tem=0;
     for(i=0;i<c;i++)
     {
-	    pp[i].low=pp[i].loca[0];
 	    for(j=0;j<pp[i].per;j++)
 	    {
-
-		   // printf("%d %d\n",pp[i].loca[j].a,pp[i].loca[j].b);
 		    if(pp[i].per==1)
 		    {
-			    pp[i].low=pp[i].loca[0];
-			 // printf("low:%d %d",pp[i].low.a,pp[i].low.b);
+			    pp[i].low=pp[j].loca[0];
 		    }
 		    else
 		    {
-		    if(pp[i].loca[j].a>pp[i].low.a)
+		    if(pp[i].loca[j].a>pp[i].loca[j+1].a)
 		    {
 			    pp[i].low=pp[i].loca[j];
 	                    		    
 		    }
 		    }
 	    }
-	    printf("\n");
     }
     printf("\n");
-   // printloc(c);
+    printloc(c);
     for(i=0;i<c;i++)
     {
 	    
@@ -210,7 +205,7 @@ void move()//下移
 			 int right=pp[i].low.b;
 			 int des=pp[i].per;
                          p[tem][right].v=p[tem-des][right].v;
-			// printf(" left:%d right:%d value:%d\n",tem,right,p[tem][right].v);
+			 printf(" left:%d right:%d value:%d\n",tem,right,p[tem][right].v);
 
 		    }
 		    for(j=0;j<pp[i].per;j++)
@@ -220,22 +215,22 @@ void move()//下移
 			    p[j][right].v=5;
 		    }
 		    printf("\n");
-    }
+    }//移动位置 差一点点。
 }
 void printloc(int len)
 {
 	int i,j;
 	for(i=0;i<len;i++)
 	{
-	//	printf("per:%d index:%d lowleft:%d right:%d\n",pp[i].per,pp[i].index,pp[i].low.a,pp[i].low.b);
+		printf("per:%d index:%d lowleft:%d right:%d\n",pp[i].per,pp[i].index,pp[i].low.a,pp[i].low.b);
 	}
 }
 void left()//左移
 {
-     //如果一列全为-1 则最右边的值给全为-1这一项 其余列也得移动
+     //如果一列全为-1 则最右边的值给全为-1这一项
      int c=0;
      int i,j;
-     int ret,r1;
+     int ret;
      for(i=0;i<M;i++)
      {       for(j=0;j<N;j++)
 	     {
@@ -246,17 +241,12 @@ void left()//左移
 		     }
 	     }
 	     ret=i;
-	    
 	     if(c==N)
 	     {
-		     for(int m=ret;m<N-1;m++)
 		     for(i=0;i<N;i++)
 		     {
-			     p[i][m].v=p[i][m+1].v;
+			     p[i][ret-1].v=p[i][ret].v;
 		     }
-		     for(int n=0;n<N;n++)
-			     p[n][N-1].v=5;
-		     return;
 	     }
      }
 }
@@ -268,9 +258,7 @@ int main()
      else
      {
 	     setvalue();
-	     print();
-	     printf("\n");
-	/*     for(i=0;i<M;i++)
+	     for(i=0;i<M;i++)
          {
 	     for(j=0;j<N;j++)
 	     {
@@ -282,10 +270,9 @@ int main()
 			     
 		     }
 	     }
-         }*/
-	 left();
+         }
 	 print();
-         //move();	 
-	 //print();
+         move();	 
+	 print();
      }
 }
