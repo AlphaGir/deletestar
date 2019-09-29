@@ -3,7 +3,7 @@
  *模拟一次的点击消除
  * 规则：
  * 1.点击的星星周围（上下左右）有颜色相同的就删掉。递归删掉周围相连接所有的相同的节点。
- * 2.删掉的上面的会落下 一列如果最后的一个删掉了，就是没有了的话，它左边的会右移过来。
+ * 2.删掉的上面的会落下 一列如果最后的一个删掉了，就是没有了的话，它左边的会右移过来。找到所有相关点以后，记录在数组里，然后如果是同一列的点 就从最小的开始找直到找到最上面的点，然后把最最上面的点和最小的交换位置。
  * 3.显示点击以后的面板  
  *
  *
@@ -12,8 +12,13 @@
 #include<stdio.h>
 #define M 10
 #define N 10
-#define click1 3
+#define click1 9
 #define click2 4
+typedef struct point
+{
+	int v;
+	int flag;
+}point;
 int pos[4][2]={{0,1},
 	       {0,-1},
 	       {1,0},
@@ -31,6 +36,19 @@ int board[M][N]={
 		{2,3,1,0,2,1,0,0,3,2},
 		{2,0,0,2,3,1,1,4,2,1},
 		{2,3,4,2,1,1,2,3,4,0}};
+point p[M][N];
+void setvalue()
+{
+	int i,j;
+	for(i=0;i<M;i++)
+	{
+		for(j=0;j<N;j++)
+		{
+			p[i][j].v=board[i][j];
+			p[i][j].flag=0;
+		}
+	}
+}
 void print()
 {
 	printf("-------------------------\n");
@@ -39,7 +57,7 @@ void print()
 	{
 		for(j=0;j<N;j++)
 		{
-			printf("%d ",board[i][j]);
+			printf("%d ",p[i][j].flag);
 		}
 		printf("\n");
 	}
@@ -50,8 +68,9 @@ void delete(int i,int j)
 //2.记住最上面的坐标，然后找最小的
 //3.
 {
-     int value=board[i][j];
-     if(i<0||i>=M||j<0||j>=N||value==-1)
+     int value=p[i][j].v;
+     int f=0;
+     if(i<0||i>=M||j<0||j>=N)
 	     return ;
      else
      {
@@ -61,16 +80,16 @@ void delete(int i,int j)
 		     
 			     int t=i+pos[m][0];
 			     int t1=j+pos[m][1];
-			     if(t>=0&&t<M&&t1>=0&&t1<N&&board[t][t1]==value&&value!=-1)
-				     board[t][t1]=-1;
+			     if(t>=0&&t<M&&t1>=0&&t1<N&&p[t][t1].v==value&&p[t][t1].flag!=1)
+			     {   
+				  p[t][t1].flag=1;
+				  delete(t,t1);
+				  f=1;
+			     }
 	     }
-	     for(m=0;m<4;m++)
-	     {
-		     
-			     int t=i+pos[m][0];
-                             int t1=j+pos[m][1];	   
-                             delete(t,t1);
-	     }
+	     
+	     
+	     
      }
 
 
@@ -82,13 +101,17 @@ int main()
 	     printf("click again\n");
      else
      {
+	     setvalue();
 	     for(i=0;i<M;i++)
          {
 	     for(j=0;j<N;j++)
 	     {
 		     if(i==click1&&j==click2)
 		     {
+			     
 			     delete(i,j);
+			     //print();
+			     
 		     }
 	     }
          }
